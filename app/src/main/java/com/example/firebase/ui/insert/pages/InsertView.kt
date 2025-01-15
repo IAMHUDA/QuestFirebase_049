@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +22,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -27,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,6 +56,7 @@ fun InsertMhsView(
     val uiEvent = viewModel.uiEvent
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect (uiState){
         when (uiState) {
@@ -78,11 +83,12 @@ fun InsertMhsView(
     }
 
     Scaffold (
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Tambah Mahasiswa") },
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     Button(onClick = onBack) {
                         Text("Back")
@@ -96,6 +102,7 @@ fun InsertMhsView(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ){
             InsertBodyMhs(
                 uiState = uiEvent,
@@ -266,6 +273,48 @@ fun FormMahasiswa(
         )
         Text(
             text = errorState.angkatan ?: "",
+            color = Color.Red)
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = mahasiswaEvent.judulskripsi,
+            onValueChange = {
+                onValueChange(mahasiswaEvent.copy(judulskripsi = it))
+            },
+            label = { Text("judulskripsi") },
+            isError = errorState.alamat != null,
+            placeholder = { Text("Masukkan judulskripsi") },
+        )
+        Text(
+            text = errorState.alamat ?: "",
+            color = Color.Red)
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = mahasiswaEvent.dospemsatu,
+            onValueChange = {
+                onValueChange(mahasiswaEvent.copy(dospemsatu = it))
+            },
+            label = { Text("dospemsatu") },
+            isError = errorState.alamat != null,
+            placeholder = { Text("Masukkan judulskripsi") },
+        )
+        Text(
+            text = errorState.alamat ?: "",
+            color = Color.Red)
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = mahasiswaEvent.dospemdua,
+            onValueChange = {
+                onValueChange(mahasiswaEvent.copy(dospemdua = it))
+            },
+            label = { Text("dospemdua") },
+            isError = errorState.alamat != null,
+            placeholder = { Text("Masukkan doepemdua") },
+        )
+        Text(
+            text = errorState.alamat ?: "",
             color = Color.Red)
     }
 }
